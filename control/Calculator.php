@@ -58,7 +58,7 @@ class Calculator {
 		if( $_REQUEST['company_mail'] ) {
 			$mailer = new Mailer();
 			$mailOk = $mailer->send( $out );
-			if( $mailOk && $_REQUEST['user_mail'] ) {
+			if( $mailOk && ($email = $_REQUEST['email']) ) {
 				$mailOk = $mailer->send( $out, $email );
 			}
 		}
