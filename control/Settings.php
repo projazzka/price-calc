@@ -8,6 +8,21 @@
 
 class Settings {
 	function __construct() {
+		$this->options = array( 
+			'bidformat',
+			'email',
+			'fullquote',
+			'contact',
+			'print',
+			'subtotal',
+			'currency',
+			'subject',
+			'suppresszero',
+			'css',
+			'nocontinue',
+			'noback',
+		);
+		$this->template = 'settings.php';
 	}
 	
 	function action() {
@@ -22,32 +37,17 @@ class Settings {
 	}
 	
 	function save() {
-		update_option( 'price-calc-structure', $_REQUEST['structure'] );
-		update_option( 'price-calc-bidformat', $_REQUEST['bidformat'] );
-		update_option( 'price-calc-variations', $_REQUEST['variations'] );
-		update_option( 'price-calc-email', $_REQUEST['email'] );
-		update_option( 'price-calc-fullquote', $_REQUEST['fullquote'] );
-		update_option( 'price-calc-contact', $_REQUEST['contact'] );
-		update_option( 'price-calc-print', $_REQUEST['print'] );
-		update_option( 'price-calc-subtotal', $_REQUEST['subtotal'] );
-		update_option( 'price-calc-currency', $_REQUEST['currency'] );
-		update_option( 'price-calc-subject', $_REQUEST['subject'] );
+		foreach( $this->options as $option ) {
+			update_option( 'price-calc-' . $option, $_REQUEST[$option]);
+		}
 		$this->show();
 	}
 	
 	function show() {
-		$structure = get_option( 'price-calc-structure' );
-		$bidformat = get_option( 'price-calc-bidformat' );
-		$variations = get_option( 'price-calc-variations' );
-		$email = get_option( 'price-calc-email' );
-		$fullquote = get_option( 'price-calc-fullquote' );
-		$contact = get_option( 'price-calc-contact' );
-		$print = get_option( 'price-calc-print' );
-		$subtotal = get_option( 'price-calc-subtotal' );
-		$currency = get_option( 'price-calc-currency' );
-		$subject = get_option( 'price-calc-subject' );
-
-		include( PRICE_CALC_TEMPLATES . 'settings.php' );
+		foreach( $this->options as $option ) {
+			$$option = get_option('price-calc-' . $option);
+		}
+		include( PRICE_CALC_TEMPLATES . $this->template );
 	}
 		
 }

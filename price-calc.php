@@ -48,6 +48,8 @@ function price_calc_admin() {
   // top-level menu
   add_object_page("Calculator", "Calculator", -1, __FILE__, "price-calc_plugin");
   add_submenu_page(__FILE__,"Prices","Prices", 8, PRICE_CALC_ROOT . "back.php");
+  add_submenu_page(__FILE__,"Structure","Structure", 8, PRICE_CALC_ROOT . "structure.php");
+  add_submenu_page(__FILE__,"Phrases","Phrases", 8, PRICE_CALC_ROOT . "phrases.php");
   add_submenu_page(__FILE__,"Settings","Settings", 8, PRICE_CALC_ROOT . "settings.php");
 }
 
@@ -71,6 +73,10 @@ function price_calc_init() {
 function price_calc_activate() {
 	static $default_options;
 	
+	require_once( PRICE_CALC_CONTROL . 'Phrases.php' );
+	
+	$phrases = new Phrases();
+	
 	$default_options = array(
 		'price-calc-bidformat' => "Give your pet a new home!\r\n<table>\r\n	<tr><td>Full name:</td><td>%fname%</td></tr>\r\n	<tr><td>Contact number:</td><td>%cno%</td></tr>\r\n	<tr><td>Email:</td><td>%email%</td></tr>\r\n	<tr><td>Comment:</td><td>%comments%</td></tr>\r\n</table>\r\n\r\n%sum%\r\n\r\n<p>Thank you for your inquiry!</p>",
 		'price-calc-contact' => 'on',
@@ -84,7 +90,9 @@ function price_calc_activate() {
 		'price-calc-table-cat' => '{"base_price":"150","base_dim":{"2x3":"12","3x5":"20","3x4":"14","6x6":"30"},"base_height":{"5":"0","9":"","6":"0","10":"","7":"10","11":"","8":"","12":""},"color":{"black":"0","red":"0","white":"0","green":"10"},"windows":{"1":"5","2":"10","3":"15"},"door":{"1":""}}',
 		'price-calc-table-dog' => '{"base_price":"100","base_dim":{"2x3":"10","3x5":"30","3x4":"20","6x6":"50"},"base_height":{"5":"0","9":"5","6":"0","10":"5","7":"0","11":"5","8":"0","12":"5"},"color":{"black":"0","red":"20","white":"0","green":"20"},"windows":{"1":"50","2":"100","3":"150"},"door":{"1":"15"}}',
 		'price-calc-table-puppet' => '{"base_price":"300","base_dim":{"2x3":"40","3x5":"60","3x4":"50","6x6":"70"},"base_height":{"5":"0","9":"20","6":"10","10":"20","7":"10","11":"30","8":"20","12":"30"},"color":{"black":"5","red":"10","white":"5","green":"10"},"windows":{"1":"45","2":"90","3":"135"},"door":{"1":"20"}}',
-		'price-calc-variations' => "dog|Dog House\r\ncat|Cat House\r\npuppet|Puppet House\r\n"
+		'price-calc-variations' => "dog|Dog House\r\ncat|Cat House\r\npuppet|Puppet House\r\n",
+		'price-calc-phrases' => json_encode($phrases->getDefaults()),
+		'price-calc-css' => "div#price_calc {\r\n	font-family: Arial, Helvetica, sans-serif;\r\n	text-align: left;\r\n}\r\n\r\n#response {\r\n	padding: 30px;\r\n}\r\n\r\n#price_calc table {\r\n	width: 400px;\r\n}\r\n\r\n#price_calc th {\r\n	width:100px;        \r\n	margin-top: 30px;\r\n	text-align: left;\r\n}\r\n\r\n#price_calc td {\r\n	width:200px;\r\n	text-align: left;\r\n}\r\n\r\n.stage-control {\r\n	text-align: left;\r\n}"
 	);
 	foreach( $default_options as $key => $value ) {
 		add_option( $key, $value );

@@ -6,32 +6,62 @@
  * (c) 2009 by Igor Prochazka (thickthumb.com)
  */
 
-require_once( dirname( __FILE__ ) . '/../options.php' );
-require_once( dirname( __FILE__ ) . '/Storage.php' );
-require_once( dirname( __FILE__ ) . '/Mailer.php' );
-require_once( dirname( __FILE__ ) . '/Variation.php' );
+require_once( PRICE_CALC_ROOT . 'options.php' );
+require_once( PRICE_CALC_CONTROL . '/Storage.php' );
+require_once( PRICE_CALC_CONTROL . '/Mailer.php' );
+require_once( PRICE_CALC_CONTROL . '/Variation.php' );
+require_once( PRICE_CALC_CONTROL . '/Value.php' );
+require_once( PRICE_CALC_CONTROL . '/Formula.php' );
 
 class Calculator {
+
+	private $ids;
+	private $titles;
+	
+	function __construct() {
+		$this->load();
+	}
+	
+	function load() {
+		global $elements;
+		
+		$data = get_option('price-calc-format');
+		$this->ids = array();
+		$this->titles = array();
+		if( $data ) {
+			$lines = explode( "\n", $data );
+			foreach( $lines as $line ) {
+				$line = trim($line);
+				list( $id, $title ) = explode( '|', $line );
+				$this->ids[] = $id;
+				if( $title )
+					$this->titles[$id] = $title;
+			}
+		} else {
+			foreach( $elements as $elem ) {
+				if( $elem['type'] != ELEMENT_HEADING ) {
+					$this->ids[] = $elem['id'];
+				}
+			}
+			$this->ids[] = '@total';
+			$this->titles['@total'] = 'TOTAL';
+		}
+	}
 	
 	function action() {
 		$storage = new Storage();
 		$prices = $storage->load( Variation::getFromRequest() );
 		
-		$summands = $this->getSummands( $prices, $_REQUEST );
+		$concepts = $this->getConcepts( $prices, $_REQUEST );
 
-		if( $_REQUEST['subtotal'] ) {
-			$total = $this->getTotal( $summands );
-			$this->outputSubtotal( $total );
+		$out = $this->getQuote( $concepts );
+
+		$print = $_REQUEST['print'];
+
+		if(!$print) {
+			$this->normalResponse( $out );
 		} else {
-			$out = $this->getQuote( $summands );
-	
-			$print = $_REQUEST['print'];
-
-			if(!$print) {
-				$this->normalResponse( $out );
-			} else {
-				$this->printResponse( $out );
-			}
+			$this->printResponse( $out );
 		}
 	}
 
@@ -65,9 +95,9 @@ class Calculator {
 		return $mailOk;
 	}
 
-	function getQuote( $summands ) {
-		$total = $this->getTotal( $summands );
+	function getQuote( $concepts ) {
 		$currency = get_option( 'price-calc-currency' );
+		$suppresszero = get_option( 'price-calc-suppresszero' );
 
 		ob_start();
 		include( PRICE_CALC_TEMPLATES . 'bidformat.php' );
@@ -93,42 +123,42 @@ class Calculator {
 		return $out;
 	}
 	
-	function getSummands( $prices, $values ) {
+	function getConcepts( $prices, $values ) {
 		global $elements;
 		global $titles;
 		global $options;
-		
-		foreach( $elements as $elem ) {
-			$id = $elem['id'];
-			switch( $elem['type']) {
-				case ELEMENT_SELECT:
-					$chosen = $values[ $id ];
-					if( $chosen ) {
-						$title = $titles[$id] . ': ' . $options[$id][ $chosen ];
-						$price = $prices[$id][$chosen];
-						$result[$title] = $price;
-					}
-					break;
-				case ELEMENT_FIXED:
-						$price = $prices[$id];
-						$result[$elem['title']] = $price;
-					break;
+
+		$formula = new Formula();
+		$total = $formula->calculate( $prices, $values );
+			
+		$value = new Value();
+			
+		foreach( $this->ids as $id ) {
+			if( $id[0] == '@' ) {
+				$title = $this->titles[ $id ];
+				$val = $formula->getMemory( substr( $id, 1 ) );
+				$operator = '=';
+			} else {
+				if( array_key_exists( $id, $this->titles ) )
+					$title = $this->titles[ $id ];
+				else
+					$title = $value->getTitle( $values, $id );
+				$val = $value->getValue( $prices, $values, $id );
+				$operator = $formula->getOperator( $id );
 			}
+			$suppress = false;
+			if( get_option( 'price-calc-suppresszero' ) ) {
+				if(($operator == '+' && $val == 0 ) || 
+					( $operator == '*' && $val == 1 ) ||
+					( $operator == '%' && $val == 0 ))
+				$suppress = true;
+			}
+			if( !$suppress )
+				$concepts[] = array( 'title'=>$title, 'value'=>$val, 'operator'=>$operator );
 		}
-		return $result;
+		return $concepts;
 	}
 	
-	function getTotal( $summands ) {
-		$total = 0;
-		if( is_array( $summands ) ) 
-			foreach( $summands as $summand )
-				$total += $summand;
-		return $total;
-	}
-	
-	function outputSubtotal( $total ) {
-		echo "Subtotal: $total<br />\n";
-	}
 }
 
 ?>

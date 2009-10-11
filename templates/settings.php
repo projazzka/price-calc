@@ -81,20 +81,36 @@ Show full quote button:
 </td>
 </tr>
 <tr>
+<td>
+Suppress zero summands:
+</td>
+<td class="values">
+<input type="checkbox" name="suppresszero" <?php if( $suppresszero ) echo 'checked="checked"' ?>"/>
+</td>
+</tr>
+<tr>
+<td>
+No continue buttons:
+</td>
+<td class="values">
+<input type="checkbox" name="nocontinue" <?php if( $nocontinue ) echo 'checked="checked"' ?>"/>
+</td>
+</tr>
+<tr>
+<td>
+No back buttons:
+</td>
+<td class="values">
+<input type="checkbox" name="noback" <?php if( $noback ) echo 'checked="checked"' ?>"/>
+</td>
+</tr>
+<tr>
 <tr>
 <td>
 Display intermediate results:
 </td>
 <td class="values">
 <input type="checkbox" name="subtotal" <?php if( $subtotal ) echo 'checked="checked"' ?>"/>
-</td>
-</tr>
-<tr>
-<td>
-Structure:<br />
-This defines all the possible options available for the product variation and its visualisation. The format is described above.<br />
-<td class="values">
-<textarea name="structure"><?php echo htmlspecialchars($structure) ?></textarea>
 </td>
 </tr>
 <tr>
@@ -149,6 +165,15 @@ List of product general variations. One per line. Id (used internally) and title
 <textarea name="variations"><?php echo $variations ?></textarea>
 </td>
 </tr>
+<tr>
+<td>
+CSS Style Sheet:<br />
+(Leave blank if you prefer to use your theme's styles)
+</td>
+<td class="values">
+<textarea name="css"><?php echo htmlspecialchars($css, ENT_NOQUOTES) ?></textarea>
+</td>
+</tr>
 </table>
 <input type="hidden" name="action" value="save" />
 <input type="submit" value="Save" />
@@ -156,50 +181,5 @@ List of product general variations. One per line. Id (used internally) and title
 <p>We know this configuration screen is difficult to use and understand. We would appreciate any 
 suggestion. We depend on your help to improve it. Go to the <a href="http://www.thickthumb.com/open-source/price-calc/">official plugin homepage</a>
 to support this project.</p>
-
-<p>This is the format for the structure settings:
-<table>
-<tr>
-<th>Element</th>
-<th>Format</th>
-<th>Description</th>
-</tr>
-<tr>
-<td>Heading</td>
-<td><pre>==&lt;id&gt;|&lt;title&gt;</pre></td>
-<td><pre>
-&lt;id&gt; : unique identifier for internal use only
-&lt;title&gt; : heading title
-</pre>
-</td>
-</tr>
-<tr>
-<td>Fixed value</td>
-<td><pre>#&lt;id&gt;|&lt;title&gt;&lt;/pre&gt;</td>
-<td><pre>
-&lt;id&gt; : unique identifier for internal use only
-&lt;title&gt; : the value's title
-</pre>
-</td>
-</tr>
-<tr>
-<td>Option list</td>
-<td><pre>@&lt;id&gt;|&lt;title&gt;&lt;required&gt;|&lt;columns&gt;
--&lt;id1&gt;|&lt;title1&gt;
--&lt;id2&gt;|&lt;title2&gt;
--&lt;id3&gt;|&lt;title3&gt;
-...
-</pre>
-</td>
-<td><pre>
-&lt;id&gt; : unique identifier for internal use only
-&lt;title&gt; : the value's title
-&lt;required&gt; : an asterik ('*') if obligatory option. Empty otherwise.
-&lt;id1&gt; : the option's identifier
-&lt;title1&gt; : the option's title
-</pre>
-</td>
-</tr>
-</table>
 	
 </p>

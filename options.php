@@ -26,7 +26,7 @@ $contact_obligatory = array( "fname", "cno", "email" );
 // general product variations
 
 
-$opts = new Options();
+$opts = Options::getInstance();
 
 // terms used in the invoice:
 $titles = $opts->getTitles();

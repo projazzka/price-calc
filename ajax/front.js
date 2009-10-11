@@ -6,6 +6,75 @@
  * (c) 2009 by Igor Prochazka (thickthumb.com)
  */
 
+function validate_unequal_reference( left, right, msg ) {
+	leftval = jQuery("#"+left).val();
+	rightval = jQuery("#"+right).val();
+	if (leftval != rightval) {
+		alert(msg);
+		return false;
+	}
+	return true;
+}
+function validate_unequal_value( left, right, msg ) {
+	leftval = jQuery("#"+left).val();
+	if (leftval != right) {
+		alert(msg);
+		return false;
+	}
+	return true;
+}
+function validate_greater_reference( left, right, msg ) {
+	leftval = parseFloat(jQuery("#"+left).val());
+	rightval = parseFloat(jQuery("#"+right).val());
+	if (leftval > rightval) {
+		alert(msg);
+		return false;
+	}
+	return true;
+}
+function validate_greater_value( left, right, msg ) {
+	leftval = parseFloat(jQuery("#"+left).val());
+	if (leftval > parseFloat(right)) {
+		alert(msg);
+		return false;
+	}
+	return true;
+}
+function validate_less_reference( left, right, msg ) {
+	leftval = parseFloat(jQuery("#"+left).val());
+	rightval = parseFloat(jQuery("#"+right).val());
+	if (leftval < rightval) {
+		alert(msg);
+		return false;
+	}
+	return true;
+}
+function validate_less_value( left, right, msg ) {
+	leftval = parseFloat(jQuery("#"+left).val());
+	if (leftval < parseFloat(right)) {
+		alert(msg);
+		return false;
+	}
+	return true;
+}
+
+function validate_equal_reference( left, right, msg ) {
+	leftval = jQuery("#"+left).val();
+	rightval = jQuery("#"+right).val();
+	if (leftval == rightval) {
+		alert(msg);
+		return false;
+	}
+	return true;
+}
+function validate_equal_value( left, right, msg ) {
+	leftval = jQuery("#"+left).val();
+	if (leftval == right) {
+		alert(msg);
+		return false;
+	}
+	return true;
+}
 
 
 function responseAjax( encoded ) {
@@ -30,6 +99,7 @@ function getParamMap( values ) {
 	for( idx in values ) {
 		id = values[idx];
 		obj = jQuery("[name='" + id + "']");
+		
 		if( obj.attr("type") == "checkbox" ) 
 			param = obj.is(":checked") ? "1" : "";
 		else 
@@ -56,11 +126,14 @@ function checkForm() {
 	var ok = true;
 	for( idx in required ) {
 		input = jQuery("[name='" + required[idx] + "']");
-		if( !input.val() || input.val()==0 || input.val()=='' ) {
-			input.css("background", "#fee3ad");
-			ok = false;
-		} else {
-			input.css("background", "#ffffff");
+		if (input.length != 0) { // ignore if form element is not displayed
+			if (!input.val() || input.val() == 0 || input.val() == '') {
+				input.css("background", "#fee3ad");
+				ok = false;
+			}
+			else {
+				input.css("background", "#ffffff");
+			}
 		}
 	}
 	
@@ -72,6 +145,8 @@ function warnForm() {
 }
 
 function calculate() {
+	if( !validate_extra() )
+		return false;
 	if( !checkForm() ) {
 		warnForm();
 		return false;
@@ -83,6 +158,9 @@ function calculate() {
 
 function printWindow() {
 	var all_with_contact = all.slice().concat( contact );
+
+	if( !validate_extra() )
+		return false;
 
 	if( !checkForm() ) {
 		warnForm();
@@ -98,18 +176,59 @@ function printWindow() {
 }
 
 function updateSubtotal() {
-	var price = 0;
-	for( i in all_select ) {
-		attr = jQuery("#" + all[i] + " option:selected").attr('price');
-		if(!isNaN(parseFloat(attr)))
-			price += parseFloat(attr);
+	var total = 0;
+	for( i in formula_ids ) {
+		id = formula_ids[i];
+		operator = formula_operators[i];
+		operand = 0;
+		valid = false;
+		switch (types[id]) {
+			case 'select':
+				price = jQuery("#" + id + " option:selected").attr('price');
+				operand = parseFloat(price);
+				valid = !isNaN( operand );
+				break;
+			case 'fixed':
+				price = jQuery("#" + id).attr('price');
+				operand = parseFloat(price);
+				valid = !isNaN( operand );
+				break;
+			case 'number':
+				obj = jQuery("#" + id);
+				text = obj.val();
+				priceTxt = obj.attr('price');
+				number = parseFloat(text);
+				price = parseFloat(priceTxt);
+				if (!isNaN(number) && !isNaN(price)) {
+					operand = number * price;
+					valid = true;
+				}
+				break;
+			case 'checkbox':
+				obj = jQuery("#" + id);
+				operand = parseFloat(obj.attr('price'));
+				if (!isNaN(price) && obj.is(':checked')) {
+					valid = true;
+				}
+				break;
+		}
+		if (valid) {
+			switch (operator) {
+				case '+':
+					total += operand;
+					break;
+				case '*':
+					total *= operand;
+					break;
+				case '%':
+					total *= ((operand / 100) + 1);
+					break;
+			}
+		}
+		//alert( "total:" + total + ", id: " + id + ",operand:" + operand + ", operator:" + operator +", valid:" + valid);
 	}
-	for( i in all_fixed ) {
-		attr = jQuery("#" + all[i]).attr('price');
-		if(!isNaN(parseFloat(attr)))
-			price += parseFloat(attr);
-	}
-	jQuery("#subtotal").val( price );
+	
+	jQuery("#subtotal").val( total.toFixed(2) );
 	if(!checkForm()) {
 		warn = "(form incomplete)";
 	} else {
@@ -119,17 +238,47 @@ function updateSubtotal() {
 
 }
 
-function showMain() {
-	jQuery("#main_form").html( "Loading..." );
-	jQuery.get( "index.php", { "price-calc-form":1, "variation":jQuery( "#variation" ).val() }, function( html ) {
-		jQuery("#main_form").html( html );
+function nextStage() {
+	if( !checkForm() ) {
+		warnForm();
+		return false;
+	}
+	stage = parseInt(jQuery(this).attr("stage"));
+	jQuery("#stage_loading").show();
+	params = {
+		"price-calc-form":1,
+		"formstage": (stage+1),
+		"variation":jQuery( "#variation" ).val(),
+		"values":JSON.stringify(getParamMap( all ))
+	};
+	jQuery.get( "index.php", params, function( html ) {
+		jQuery("#stage-control-" + stage + " .stage-control-continue").hide();
+		jQuery("#stage-control-" + stage + " .stage-control-back").show();
+		jQuery("#form-stage-" + stage + " :input").attr("disabled", "disabled");
+
+		jQuery("#main_form").append( html );
 		jQuery("#control_form").css( "display", "block" );
 		jQuery(":input").change( updateSubtotal );
+		jQuery("#stage-continue-" + (stage+1)).click( nextStage );
+		jQuery("#stage-back-" + (stage+1)).click( previousStage );
+		
+		jQuery(".on_change_next").change( nextStage );
 	} );
+	jQuery("#stage_loading").hide();
+}
+
+function previousStage() {
+	stage = parseInt(jQuery(this).attr("stage"));
+	jQuery(".form-stage:gt(" + stage + ")").remove();
+	jQuery("#stage-control-" + (stage+1)).remove();
+	jQuery("#stage-control-" + stage + " .stage-control-continue").show();
+	jQuery("#stage-control-" + stage + " .stage-control-back").hide();
+	jQuery("#form-stage-" + stage + " :input").removeAttr("disabled");
 }
 
 jQuery(document).ready( function() {
-	jQuery("#continue").click( showMain );
+	jQuery(".stage-continue").click( nextStage ).removeAttr("disabled");
+	jQuery(".stage-back").click( previousStage );
 	jQuery("#company_mail").change( function() {
 		jQuery("div#contact_form").toggle( jQuery(this).val() );
 	} );

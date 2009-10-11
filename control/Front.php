@@ -1,7 +1,10 @@
 <?php
 
 require_once( PRICE_CALC_ROOT . 'options.php' );
+require_once( PRICE_CALC_CONTROL . 'Phrases.php' );
 require_once( PRICE_CALC_CONTROL . 'Form.php' );
+require_once( PRICE_CALC_CONTROL . 'Formula.php' );
+require_once( PRICE_CALC_CONTROL . 'Validation.php' );
 
 class Front {
 	function action( $param_str ) {
@@ -20,6 +23,21 @@ class Front {
 		$contact = get_option( 'price-calc-contact' );
 		$print = get_option( 'price-calc-print' );
 		$subtotal = get_option( 'price-calc-subtotal' );
+		$css = get_option( 'price-calc-css' );
+		
+		$formula = new Formula();
+		$formula_ids = $formula->getIds();
+		$formula_operators = $formula->getOperators();
+		
+		$validation = new Validation();
+		$validators = $validation->outputJavaScript();
+		
+		foreach( $elements as $key => $data ) {
+			$type = $data['type'];
+			if( in_array( $type, array( 'select', 'fixed', 'number', 'checkbox' ) ) ) {
+				$types[ $data['id'] ] = $type;
+			}
+		}
 		
 		parse_str( $param_str, $params );
 		$variation = $params['variation'];
