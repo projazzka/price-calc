@@ -58,20 +58,24 @@ class Formula {
 			$operator = $this->operators[$idx];
 			if( $operator != '=' )
 				$operand = $value->getValue( $prices, $values, $id );
-			switch( $operator ) {
-				case '+':
-					$price += $operand;
-					break;
-				case '*':
-					$price *= $operand;
-					break;
-				case '%':
-					$price *= (($operand/100)+1);
-					break;
-				case '=':
-					$this->memory[$id] = $price;
-					//echo "saving $price as @{$id}\n";
-					break;
+			else
+				$operand = true;
+			if( $operand !== false ) {
+				switch( $operator ) {
+					case '+':
+						$price += $operand;
+						break;
+					case '*':
+						$price *= $operand;
+						break;
+					case '%':
+						$price *= (($operand/100)+1);
+						break;
+					case '=':
+						$this->memory[$id] = $price;
+						//echo "saving $price as @{$id}\n";
+						break;
+				}
 			}
 			//echo "step $idx, id $id, operator $operator, operand $operand, price: $price\n";
 		}

@@ -1,15 +1,5 @@
 <?php
 
-if( !function_exists( 'is_select_disabled' ) ) {
-	function is_select_disabled( $id, $prices ) {
-		if( !is_array($prices[$id]) )
-			return true;
-		foreach( $prices[$id] as $price )
-			if( $price !== '' ) return false;
-		return true;
-	}
-}
-
 if( !function_exists( 'output_select' ) ) {
 	function output_select( $id, $prices, $on_change_next = false, $stage = 0 ) {
 		global $options;
@@ -24,7 +14,7 @@ if( !function_exists( 'output_select' ) ) {
 		}
 		echo "</select>";
 		if( array_search( $id, $obligatory ) !== false ) {
-			echo " * Required";
+			echo "&nbsp;"; pc_phrase('required');
 		}
 	}
 }

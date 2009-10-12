@@ -77,7 +77,9 @@ class Calculator {
 	}
 	
 	function printResponse( $out ) {
-		echo '<html><body><a href="javascript:window.print()">Print</a><br />';
+		$css = get_option( 'price-calc-css' );
+
+		echo '<html><head><style>' . htmlspecialchars($css, ENT_NOQUOTES) . '</style></head><body><a href="javascript:window.print()">Print</a><br />';
 		echo $out;
 		echo '</body></html>';
 	}
@@ -148,7 +150,7 @@ class Calculator {
 			}
 			$suppress = false;
 			if( get_option( 'price-calc-suppresszero' ) ) {
-				if(($operator == '+' && $val == 0 ) || 
+				if($val === false || ($operator == '+' && $val == 0 ) || 
 					( $operator == '*' && $val == 1 ) ||
 					( $operator == '%' && $val == 0 ))
 				$suppress = true;

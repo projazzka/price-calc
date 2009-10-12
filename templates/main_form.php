@@ -13,7 +13,6 @@ include PRICE_CALC_TEMPLATES . "functions.php";
 	</tr>
 <?php break; ?>
 <?php case ELEMENT_SELECT : ?>
-<?php if(!is_select_disabled($elem['id'], $prices)) : ?>
 	<tr>
 	<th>
 	<div class="b"><?php echo $elem['title'] ?>:</div></th>
@@ -21,7 +20,6 @@ include PRICE_CALC_TEMPLATES . "functions.php";
 		<?php output_select($elem['id'], $prices, $elem['on_change_next'], $formStage ) ?>
 	</td>
 	</tr>
-<?php endif ?>
 <?php break; ?>
 <?php case ELEMENT_NUMBER : ?>
 	<tr>

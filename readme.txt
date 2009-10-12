@@ -3,8 +3,8 @@ Contributors: jazzigor
 Donate link: http://www.thickthumb.com/open-source
 Tags: price, calculator, calculate, calculation, product, variations
 Requires at least: 2.8
-Tested up to: 2.8.4
-Stable tag: 0.6
+Tested up to: 2.8.2
+Stable tag: 0.6.1
 
 "price-calc" is a WordPress plug-in that shows a nice inter-active price calculator for your product variations on any post or page. 
 
@@ -62,3 +62,8 @@ See more info about the configuration on the [plugin's homepage](http://www.thic
 * user-defined calculation formula with addition, multiplication and percentages
 * customizable quote structure with intermediate results
 * Optional suppression of zero values in the quote
+
+= 0.6.1 =
+* proper handing of blank factors
+* removed hard-coded css
+* added 2 missing phrase translations

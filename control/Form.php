@@ -10,6 +10,7 @@ require_once( PRICE_CALC_ROOT . 'options.php' );
 require_once( PRICE_CALC_CONTROL . 'Phrases.php' );
 require_once( PRICE_CALC_CONTROL . 'Storage.php' );
 require_once( PRICE_CALC_CONTROL . 'Variation.php' );
+require_once( PRICE_CALC_CONTROL . 'Element.php' );
 
 class Form {
 	
@@ -31,12 +32,15 @@ class Form {
 		$stageElements = $stages[$formStage-1];
 		
 		foreach( $stageElements as $element ) {
-			if( $condition = $element['condition'] ) {
-				if( $condition->check( $values ) ) {
+			$obj = new Element( $element );
+			if( $obj->isEnabled( $prices ) ) {
+				if( $condition = $element['condition'] ) {
+					if( $condition->check( $values ) ) {
+						$elems[] = $element;
+					}
+				} else {
 					$elems[] = $element;
 				}
-			} else {
-				$elems[] = $element;
 			}
 		}
 		

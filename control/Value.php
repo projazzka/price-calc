@@ -15,7 +15,11 @@ class Value {
 			
 		if( $elem['type'] == ELEMENT_SELECT ) {
 			$chosen = $values[ $id ];
-			$title = $titles[$id] . ': ' . $options[$id][ $chosen ];
+			if( $chosen ) {
+				$title = $titles[$id] . ': ' . $options[$id][ $chosen ];
+			} else {
+				$title = $titles[$id];
+			}
 		} else {
 			$title = $elem['title'];
 		}

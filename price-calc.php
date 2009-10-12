@@ -3,7 +3,7 @@
 Plugin Name: price-calc
 Plugin URI: http://www.thickthumb.com/open-source/price-calc/
 Description: Displays a configurable price calculator for your products
-Version: 0.5.1
+Version: 0.6.1
 Author: Igor Prochazka
 Author URI: http://www.thickthumb.com
 
@@ -92,7 +92,7 @@ function price_calc_activate() {
 		'price-calc-table-puppet' => '{"base_price":"300","base_dim":{"2x3":"40","3x5":"60","3x4":"50","6x6":"70"},"base_height":{"5":"0","9":"20","6":"10","10":"20","7":"10","11":"30","8":"20","12":"30"},"color":{"black":"5","red":"10","white":"5","green":"10"},"windows":{"1":"45","2":"90","3":"135"},"door":{"1":"20"}}',
 		'price-calc-variations' => "dog|Dog House\r\ncat|Cat House\r\npuppet|Puppet House\r\n",
 		'price-calc-phrases' => json_encode($phrases->getDefaults()),
-		'price-calc-css' => "div#price_calc {\r\n	font-family: Arial, Helvetica, sans-serif;\r\n	text-align: left;\r\n}\r\n\r\n#response {\r\n	padding: 30px;\r\n}\r\n\r\n#price_calc table {\r\n	width: 400px;\r\n}\r\n\r\n#price_calc th {\r\n	width:100px;        \r\n	margin-top: 30px;\r\n	text-align: left;\r\n}\r\n\r\n#price_calc td {\r\n	width:200px;\r\n	text-align: left;\r\n}\r\n\r\n.stage-control {\r\n	text-align: left;\r\n}"
+		'price-calc-css' => "div#price_calc {\r\n	font-family: Arial, Helvetica, sans-serif;\r\n	text-align: left;\r\n}\r\n\r\n#response {\r\n	padding: 30px;\r\n}\r\n\r\n#price_calc table {\r\n	width: 500px;\r\n}\r\n\r\n#price_calc th {\r\n	width:100px;        \r\n	margin-top: 30px;\r\n	text-align: left;\r\n}\r\n\r\n#price_calc td {\r\n	width:200px;\r\n}\r\n\r\n#price_calc table.sum td {\r\n	width:200px;\r\n}\r\n\r\n.stage-control {\r\n	text-align: left;\r\n}\r\n\r\n#response {\r\n	border: 1px solid; width: 600px; display:none;\r\n}\r\n\r\ndiv.sum {\r\n	text-align: left;\r\n	font-family: Courier;\r\n	font-size: 1em;\r\n	\r\n}\r\n\r\ntable.sum {\r\n	border-collapse: collapse;\r\n	font-family: Courier;\r\n	font-size: 1em;\r\n}\r\ntable.sum td, table#sum tr {\r\n	border-style: solid;\r\n	border-width: 1px;	\r\n	padding: 2px;\r\n	margin: 2px;\r\n}\r\n\r\ntable.sum td.concept {\r\n	text-align: left;\r\n}\r\n\r\ntable.sum td.price {\r\n	text-align: right;\r\n}"
 	);
 	foreach( $default_options as $key => $value ) {
 		add_option( $key, $value );

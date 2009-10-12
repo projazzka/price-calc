@@ -125,14 +125,14 @@ function validate_extra() {
 </div>
 <?php endif; // contact ?>
 <?php if( $fullquote ) : ?>
-<br /><input id="calculate" type="button" value="Get Full Quote" />
+<br /><input id="calculate" type="button" value="<?php pc_phrase('fullquote') ?>" />
 <?php endif; ?>
 <?php if( $print ) : ?>
-<input id="print" type="button" value="Print Full Quote" /> (opens pop-up window)<br /> 
+<input id="print" type="button" value="<?php pc_phrase('print') ?>" /> <?php pc_phrase('popup') ?><br /> 
 <?php endif ?>
 <br />
 
-<div id="response" style="border: 1px solid; width: 600px; display:none"><br /><br /></div>
+<div id="response"><br /><br /></div>
 
 
 </div>
