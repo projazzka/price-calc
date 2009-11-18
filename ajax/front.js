@@ -6,6 +6,8 @@
  * (c) 2009 by Igor Prochazka (thickthumb.com)
  */
 
+var ttpc_memory;
+
 function validate_unequal_reference( left, right, msg ) {
 	leftval = jQuery("#"+left).val();
 	rightval = jQuery("#"+right).val();
@@ -76,6 +78,52 @@ function validate_equal_value( left, right, msg ) {
 	return true;
 }
 
+function ttpc_number_format( number ) {
+	return ttpc_currency + 
+		phpjs_number_format( number, ttpc_decimals, ttpc_point, ttpc_thousands ) +
+		ttpc_currencypost;
+}
+
+/* From: http://phpjs.org/functions/number_format */
+function phpjs_number_format( number, decimals, dec_point, thousands_sep) {
+    var n = number, prec = decimals;
+
+    var toFixedFix = function (n,prec) {
+        var k = Math.pow(10,prec);
+        return (Math.round(n*k)/k).toString();
+    };
+
+    n = !isFinite(+n) ? 0 : +n;
+    prec = !isFinite(+prec) ? 0 : Math.abs(prec);
+    var sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep;
+    var dec = (typeof dec_point === 'undefined') ? '.' : dec_point;
+
+    var s = (prec > 0) ? toFixedFix(n, prec) : toFixedFix(Math.round(n), prec); //fix for IE parseFloat(0.55).toFixed(0) = 0;
+
+    var abs = toFixedFix(Math.abs(n), prec);
+    var _, i;
+
+    if (abs >= 1000) {
+        _ = abs.split(/\D/);
+        i = _[0].length % 3 || 3;
+
+        _[0] = s.slice(0,i + (n < 0)) +
+              _[0].slice(i).replace(/(\d{3})/g, sep+'$1');
+        s = _.join(dec);
+    } else {
+        s = s.replace('.', dec);
+    }
+
+    var decPos = s.indexOf(dec);
+    if (prec >= 1 && decPos !== -1 && (s.length-decPos-1) < prec) {
+        s += new Array(prec-(s.length-decPos-1)).join(0)+'0';
+    }
+    else if (prec >= 1 && decPos === -1) {
+        s += dec+new Array(prec).join(0)+'0';
+    }
+    return s;
+}
+
 
 function responseAjax( encoded ) {
 	var data = eval( '(' + encoded + ')' );
@@ -115,11 +163,11 @@ function sendAjax() {
 	jQuery.get( "index.php", getParamMap( all_with_contact ), responseAjax );
 }
 
-function checkForm() {
+function checkForm( checkMail ) {
 	required = obligatory.slice();
 	
 	// if email selected, then add contact info as required
-	if( jQuery("#company_mail").is(":checked") ) {
+	if( checkMail & (ttpc_contact_force || jQuery("#company_mail").is(":checked")) ) {
 		required = required.concat( contact_obligatory );
 	} 
 	
@@ -144,10 +192,10 @@ function warnForm() {
 		alert("Please fill in all boxes marked with an asterisk (*)");
 }
 
-function calculate() {
+function ttpc_calculate() {
 	if( !validate_extra() )
 		return false;
-	if( !checkForm() ) {
+	if( !checkForm( true ) ) {
 		warnForm();
 		return false;
 	} else {
@@ -162,7 +210,7 @@ function printWindow() {
 	if( !validate_extra() )
 		return false;
 
-	if( !checkForm() ) {
+	if( !checkForm( false ) ) {
 		warnForm();
 		return false;
 	}
@@ -175,61 +223,94 @@ function printWindow() {
 	win = window.open('index.php?price-calc-ajax=1&print=1'+values,'mywin','left=20,top=20,width=500,height=500,toolbar=1,resizable=1,location=1');
 }
 
-function updateSubtotal() {
+function ttpc_updateSubtotal() {
 	var total = 0;
+
+	ttpc_memory = [];
 	for( i in formula_ids ) {
 		id = formula_ids[i];
 		operator = formula_operators[i];
 		operand = 0;
-		valid = false;
-		switch (types[id]) {
-			case 'select':
-				price = jQuery("#" + id + " option:selected").attr('price');
-				operand = parseFloat(price);
-				valid = !isNaN( operand );
-				break;
-			case 'fixed':
-				price = jQuery("#" + id).attr('price');
-				operand = parseFloat(price);
-				valid = !isNaN( operand );
-				break;
-			case 'number':
-				obj = jQuery("#" + id);
-				text = obj.val();
-				priceTxt = obj.attr('price');
-				number = parseFloat(text);
-				price = parseFloat(priceTxt);
-				if (!isNaN(number) && !isNaN(price)) {
-					operand = number * price;
-					valid = true;
+		if (operator == 'C') {
+			total = 0
+		} else if (operator == '=') {
+			ttpc_memory[id] = total;
+		} else if (operator == 'f') {
+			total = ttpc_custom_formula( total, id, ttpc_memory );
+		} else {
+			valid = false;
+			if (id.charAt(0) == '@') {
+				operand = ttpc_memory[id.substring(1)];
+				valid = !isNaN(operand);
+			} else {
+				switch (types[id]) {
+					case 'select':
+						price = jQuery("#" + id + " option:selected").attr('price');
+						operand = parseFloat(price);
+						valid = !isNaN(operand);
+						break;
+					case 'fixed':
+						price = jQuery("#" + id).attr('price');
+						operand = parseFloat(price);
+						valid = !isNaN(operand);
+						break;
+					case 'number':
+						obj = jQuery("#" + id);
+						text = obj.val();
+						priceTxt = obj.attr('price');
+						number = parseFloat(text);
+						price = parseFloat(priceTxt);
+						if (!isNaN(number) && !isNaN(price)) {
+							operand = number * price;
+							valid = true;
+						}
+						break;
+					case 'checkbox':
+						obj = jQuery("#" + id);
+						operand = parseFloat(obj.attr('price'));
+						if (!isNaN(price) && obj.is(':checked')) {
+							valid = true;
+						}
+						break;
 				}
-				break;
-			case 'checkbox':
-				obj = jQuery("#" + id);
-				operand = parseFloat(obj.attr('price'));
-				if (!isNaN(price) && obj.is(':checked')) {
-					valid = true;
+			}
+			if (valid) {
+				switch (operator) {
+					case '+':
+						total += operand;
+						break;
+					case '*':
+						total *= operand;
+						break;
+					case '%':
+						total *= ((operand / 100) + 1);
+						break;
 				}
-				break;
-		}
-		if (valid) {
-			switch (operator) {
-				case '+':
-					total += operand;
-					break;
-				case '*':
-					total *= operand;
-					break;
-				case '%':
-					total *= ((operand / 100) + 1);
-					break;
 			}
 		}
 		//alert( "total:" + total + ", id: " + id + ",operand:" + operand + ", operator:" + operator +", valid:" + valid);
 	}
+	ttpc_memory['total'] = total;
+	var value;
+	if( subtotal_variable ) {
+		value = ttpc_memory[subtotal_variable];
+	} else {
+		value = total;
+	}
+	if (!isNaN(value)) {
+		subtotalTxt = ttpc_number_format( value );
+		jQuery("#subtotal").val(subtotalTxt);
+		jQuery("#subtotalspan").text(subtotalTxt);
+	}
 	
-	jQuery("#subtotal").val( total.toFixed(2) );
-	if(!checkForm()) {
+	for( id in ttpc_results ) {
+		variable = ttpc_results[id];
+		if( variable in ttpc_memory ) {
+			value = ttpc_memory[variable];
+			jQuery("#" + id).text( ttpc_number_format( value ));
+		}
+	}
+	if(!checkForm( false )) {
 		warn = "(form incomplete)";
 	} else {
 		warn = "";
@@ -238,53 +319,146 @@ function updateSubtotal() {
 
 }
 
-function nextStage() {
-	if( !checkForm() ) {
+function ttpc_nextStage(){
+	stage = parseInt(jQuery(this).attr("stage"));
+	if(!stage)
+		stage = 0;
+
+	ttpc_updateSubtotal();
+
+	if( !validate_extra() )
+		return false;
+
+	if( !ttpc_customNextStage( stage ) )
+		return false;
+
+	stage++;
+
+	if (!checkForm( false )) {
 		warnForm();
 		return false;
 	}
+	
+	if( ttpc_preloadstages )
+		ttpc_updateStages(stage);
+	else
+		ttpc_loadStage(stage);
+}
+
+function ttpc_previousStage() {
 	stage = parseInt(jQuery(this).attr("stage"));
-	jQuery("#stage_loading").show();
+	
+	ttpc_updateStages( stage );
+}
+
+function ttpc_updateStages( stage ) {
+	ttpc_updateTabs( stage );
+	ttpc_updateControl( stage );
+	ttpc_updateForms( stage );
+	ttpc_updateSubtotal();
+}
+
+function ttpc_updateForms( stage ) {
+	idx = stage;
+	jQuery(".form-stage:eq(" + idx + ")").show();
+	if (ttpc_multitab) {
+		jQuery(".form-stage:lt(" + idx + ")").hide();
+	} else {
+		if(!(stage==0 && jQuery('#variation').hasClass('stage-continue-direct')))
+			jQuery("#form-stage-" + (stage-1) + " :input").attr("disabled", "disabled");
+		jQuery("#form-stage-" + stage + " :input").removeAttr("disabled");
+	}
+	if (ttpc_preloadstages) 
+		jQuery(".form-stage:gt(" + idx + ")").hide();
+	else 
+		jQuery(".form-stage:gt(" + idx + ")").remove();
+	if (!ttpc_preloadstages) {
+		jQuery(":input").change(ttpc_updateSubtotal);
+		jQuery(".on_change_next").change(ttpc_nextStage);
+		ttpc_enterTabbing();
+	}
+}
+
+function ttpc_updateControl( stage ) {
+	jQuery("#stage-control-" + stage + " .stage-control-continue").show();
+	jQuery("#stage-control-" + stage + " .stage-control-back").hide();
+
+	jQuery("#stage-control-" + (stage-1) + " .stage-control-continue").hide();
+	jQuery("#stage-control-" + (stage-1) + " .stage-control-back").show();
+	jQuery("#stage-control-" + (stage-2) + " .stage-control-back").hide();
+
+	if (ttpc_preloadstages) {
+		jQuery("#stage-control-" + (stage + 1) + " .stage-control-continue").hide();
+		jQuery("#stage-control-" + (stage + 1) + " .stage-control-back").hide();
+	} else {
+		jQuery("#stage-control-" + (stage + 1)).remove();
+	}
+	jQuery("#stage-control-" + stage + " .stage-control-continue input").click( ttpc_nextStage );
+	jQuery("#stage-control-" + stage + " .stage-control-back input").click( ttpc_previousStage );
+}
+
+function ttpc_loadStage( stage ) {
 	params = {
 		"price-calc-form":1,
-		"formstage": (stage+1),
+		"formstage": stage,
 		"variation":jQuery( "#variation" ).val(),
 		"values":JSON.stringify(getParamMap( all ))
 	};
 	jQuery.get( "index.php", params, function( html ) {
-		jQuery("#stage-control-" + stage + " .stage-control-continue").hide();
-		jQuery("#stage-control-" + stage + " .stage-control-back").show();
-		jQuery("#form-stage-" + stage + " :input").attr("disabled", "disabled");
 
 		jQuery("#main_form").append( html );
 		jQuery("#control_form").css( "display", "block" );
-		jQuery(":input").change( updateSubtotal );
-		jQuery("#stage-continue-" + (stage+1)).click( nextStage );
-		jQuery("#stage-back-" + (stage+1)).click( previousStage );
 		
-		jQuery(".on_change_next").change( nextStage );
+		jQuery("#response").empty();
+		ttpc_updateStages( stage );
 	} );
 	jQuery("#stage_loading").hide();
+
 }
 
-function previousStage() {
-	stage = parseInt(jQuery(this).attr("stage"));
-	jQuery(".form-stage:gt(" + stage + ")").remove();
-	jQuery("#stage-control-" + (stage+1)).remove();
-	jQuery("#stage-control-" + stage + " .stage-control-continue").show();
-	jQuery("#stage-control-" + stage + " .stage-control-back").hide();
-	jQuery("#form-stage-" + stage + " :input").removeAttr("disabled");
+function ttpc_updateTabs( stage ) {
+	if( !ttpc_multitab )
+		return;
+
+	jQuery(".price-calc-tab:eq(" + (stage-1) + ")").addClass('current');
+	jQuery(".price-calc-tab:gt(" + (stage-1) + ")").removeClass('current').removeClass('active');
+	jQuery(".price-calc-tab:lt(" + (stage-1) + ")").removeClass('current').addClass('active');
+}
+
+/* use return key for switching among input elements */
+function ttpc_enterTabbing() {
+	if(!ttpc_useentertabbing)
+		return;
+	jQuery("input:text").keydown(function(e){
+		if (e.keyCode == 13) {
+			var inputs = jQuery('#price_calc input:text');
+			var index = inputs.index(jQuery(this));
+			var focus;
+			if( index >= inputs.length - 1 )
+				focus = 0;
+			else
+				focus = index + 1;
+			inputs.eq( focus ).focus();
+		
+			jQuery(this).trigger('change');
+			return false;
+		}
+		return true;
+	});
 }
 
 jQuery(document).ready( function() {
-	jQuery(".stage-continue").click( nextStage ).removeAttr("disabled");
-	jQuery(".stage-back").click( previousStage );
+	jQuery(".stage-continue").click( ttpc_nextStage ).removeAttr("disabled");
+	jQuery("#variation.stage-continue-direct").change( ttpc_loadStage );
+	jQuery(".stage-back").click( ttpc_previousStage );
 	jQuery("#company_mail").change( function() {
 		jQuery("div#contact_form").toggle( jQuery(this).val() );
 	} );
-	jQuery("#calculate").click( calculate );
+	jQuery("#calculate").click( ttpc_calculate );
 	jQuery("#print").click( printWindow );
-	jQuery(":input").change( updateSubtotal );
+	jQuery(":input").change( ttpc_updateSubtotal );
+	ttpc_updateSubtotal();
+	ttpc_enterTabbing();
 
 } );
 

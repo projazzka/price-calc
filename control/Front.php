@@ -19,12 +19,28 @@ class Front {
 		global $all_fixed;
 		global $obligatory;
 		
+		$opts = Options::getInstance();
+		$results = $opts->getResults();
+		$stageNames = $opts->getStageNames();
+		
 		$fullquote = get_option( 'price-calc-fullquote' );
 		$contact = get_option( 'price-calc-contact' );
 		$print = get_option( 'price-calc-print' );
 		$subtotal = get_option( 'price-calc-subtotal' );
 		$css = get_option( 'price-calc-css' );
-		
+		$subtotaltitle = get_option( 'price-calc-subtotaltitle');
+		$subtotalvariable = get_option( 'price-calc-subtotalvariable');
+		$subtotalspan = get_option( 'price-calc-subtotalspan');
+		$no_variant_continue = get_option( 'price-calc-novariantcontinue');
+		$decimals = get_option( 'price-calc-decimals' ); 
+		$currency = get_option( 'price-calc-currency' );
+		$currencypost = get_option( 'price-calc-currencypost' );
+		$thousands = get_option( 'price-calc-thousands' );
+		$point = get_option( 'price-calc-point' );
+		$multitab = get_option( 'price-calc-multitab' );
+		$entertabbing = get_option( 'price-calc-entertabbing' );
+		$preloadstages = get_option( 'price-calc-preloadstages' );
+
 		$formula = new Formula();
 		$formula_ids = $formula->getIds();
 		$formula_operators = $formula->getOperators();
@@ -41,14 +57,18 @@ class Front {
 		
 		parse_str( $param_str, $params );
 		$variation = $params['variation'];
+		if( get_option('price-calc-preloadstages') )
+			$stage = 0;
+		else
+			$stage = 1;
 		if( $variation ) {
 			$control = new Form();
-			$form = $control->getForm( $variation );
+			$form = $control->getForm( $variation, $stage );
 		} elseif( count( $variations ) == 1 ) {
 			reset( $variations );
 			$variation = key( $variations );
 			$control = new Form();
-			$form = $control->getForm( $variation );
+			$form = $control->getForm( $variation, $stage );
 		}
 		ob_start();
 		include( PRICE_CALC_TEMPLATES . 'front.php' );

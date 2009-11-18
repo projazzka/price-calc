@@ -1,3 +1,5 @@
+<?php require_once( 'functions.php' ); ?>
+
 <table class="sum">
 	
 <?php foreach( $concepts as $concept ) : ?>
@@ -7,19 +9,19 @@
 	<?php switch( $concept['operator'] ) :
 		case '+': ?>
 	 <?php if( $concept['value']>=0 ) : ?>
-	 + <?php echo htmlspecialchars($currency, ENT_NOQUOTES) ?><?php printf( "%.2f", $concept['value'] ); ?>&nbsp;
+	 + <?php echo htmlspecialchars( price_calc_number( $concept['value'] ), ENT_NOQUOTES) ?>&nbsp;
 	 <?php else : ?> 
-	 -<?php echo htmlspecialchars($currency, ENT_NOQUOTES) ?><?php printf( "%.2f", abs($concept['value']) ); ?>&nbsp;
+	 - <?php echo htmlspecialchars( price_calc_number( abs($concept['value']) ), ENT_NOQUOTES) ?>&nbsp;
 	 <?php endif ?>
 	 <?php break;
 	    case '*': ?>
-	 x <?php printf( "%.2f", $concept['value'] ); ?>&nbsp;
+	 x <?php echo htmlspecialchars( price_calc_number( $concept['value'], true ), ENT_NOQUOTES) ?>&nbsp;
 	 <?php break;
 	    case '%': ?>
-	 <?php printf( "%.2f", $concept['value'] ); ?>% 
+	 <?php echo htmlspecialchars( price_calc_number( $concept['value'], false, true ), ENT_NOQUOTES) ?>% 
 	 <?php break;
 	    case '=': ?>
-	 &nbsp; <?php echo htmlspecialchars($currency, ENT_NOQUOTES) ?><?php printf( "%.2f", $concept['value'] ); ?>&nbsp;
+	 &nbsp; <?php echo htmlspecialchars( price_calc_number( $concept['value'] ), ENT_NOQUOTES) ?>&nbsp;
 	 <?php break; ?>
 	<?php endswitch; ?>
 </td>

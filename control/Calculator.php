@@ -104,11 +104,13 @@ class Calculator {
 		ob_start();
 		include( PRICE_CALC_TEMPLATES . 'bidformat.php' );
 		$out = ob_get_contents();
+		$out = apply_filters( 'price-calc-bidformat', $out );
 		ob_end_clean();
 
 		ob_start();
 		include( PRICE_CALC_TEMPLATES . 'sum.php' );
 		$sum = ob_get_contents();
+		$sum = apply_filters( 'price-calc-sum', $sum, $concepts );
 		ob_end_clean();
 
 		$out .= '<div class="sum">' . wpautop( get_option( 'price-calc-bidformat' ) ) . '</div>';
@@ -121,6 +123,8 @@ class Calculator {
 		$out = str_replace( '%city%', htmlspecialchars($_REQUEST['city']), $out );
 		$out = str_replace( '%state%', htmlspecialchars($_REQUEST['state']), $out );
 		$out = str_replace( '%comments%', htmlspecialchars($_REQUEST['comments']), $out );
+
+		$out = apply_filters( 'price-calc-bid', $out );
 
 		return $out;
 	}
@@ -156,7 +160,7 @@ class Calculator {
 				$suppress = true;
 			}
 			if( !$suppress )
-				$concepts[] = array( 'title'=>$title, 'value'=>$val, 'operator'=>$operator );
+				$concepts[] = array( 'id'=>$id, 'title'=>$title, 'value'=>$val, 'operator'=>$operator );
 		}
 		return $concepts;
 	}

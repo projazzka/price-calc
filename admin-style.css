@@ -1,0 +1,30 @@
+textarea.bigtext { width: 100%; height: 300px; }
+
+td, th { vertical-align:top; text-align:left; padding: 2px; }
+
+th { width: 300px; font-weight: normal; }
+table.placeholders td, table.placeholders th { vertical-align:top; text-align:left; padding: 2px; }
+
+.postbox .hndle { cursor: pointer;}
+
+#price-calc-logo { float:left; margin:14px 6px 0 0; width: 42px; height: 36px; background: url('logo.png') left no-repeat; }
+
+#price-calc-left { float:left; padding-right:0.5%; width: 49%; }
+#price-calc-right {  float:left; padding-left:0.5%; width: 49%; }
+
+#price-calc-phrases td.values { width: 80%; }
+#price-calc-phrases td.values input { width: 100%; }
+#price-calc-phrases td, th { vertical-align:top; text-align:left; padding: 2px; }
+
+div.inside { padding: 10px; font-size:12px; }
+.postbox { background-color: #ffffff; }
+
+#price-calc-structure textarea { width: 100%; height: 200px; }
+
+#price-calc-prices .b { font-weight: bolder; margin-top: 10px; }
+
+#price-calc-prices td, #price-calc-prices th { padding: 2px; }
+#price-calc-prices table.pricegrid th { width: 120px; font-weight: normal; font-size: 0.8em; }
+#price-calc-prices table.fixed th { width: 120px; font-weight: normal; text-align:left; }
+
+p.checkboxes { padding: 5px; line-height: 20px; }

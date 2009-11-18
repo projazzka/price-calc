@@ -37,6 +37,9 @@ class Element {
 			case ELEMENT_NUMBER:
 				return ($prices[$id] !== '');
 				break;
+			case ELEMENT_RESULT:
+				return true;
+				break;
 		}
 		return true;
 	}

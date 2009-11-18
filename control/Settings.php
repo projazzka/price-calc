@@ -16,11 +16,22 @@ class Settings {
 			'print',
 			'subtotal',
 			'currency',
+			'currencypost',
 			'subject',
 			'suppresszero',
 			'css',
 			'nocontinue',
 			'noback',
+			'subtotaltitle',
+			'subtotalvariable',
+			'subtotalspan',
+			'novariantcontinue',
+			'decimals',
+			'point',
+			'thousands',
+			'multitab',
+			'entertabbing',
+			'preloadstages'
 		);
 		$this->template = 'settings.php';
 	}

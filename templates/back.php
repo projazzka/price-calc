@@ -19,25 +19,14 @@ function pricegrid( $id, $options, $all_prices, $columns = 1 ) {
 }
 ?>
 
-<style>
-html, body {
-	font-family: Arial, Helvetica, sans-serif;
-}
-div.b {
-	font-weight: bolder;
-	margin-top: 10px;
-}
+<div class="wrap"> 
+<div id="price-calc-logo"><br /></div> 
+<h2>Price Calculator - Price Table</h2>
+<div id="price-calc-prices">
 
-table.pricegrid th {
-	font-weight: normal;
-	font-size: 0.8em;
-}
-</style>	
-
-<h2>Price Table</h2>
 <p>Blank fields are marked as not available to the customer.<br />
 
-<div class="b">Variation:</div>
+<h3>Variation:</h3>
 <?php if(!is_array( $variation_links )) : ?>
 You have to define at least one valid variation
 <?php else : ?>
@@ -53,7 +42,8 @@ You have to define at least one valid variation
 <?php endif ?>
 <form name="prices" method="post">
 
-<div class="b">Variation:</div> <?php echo $variation_title ?>
+<p></p><span class="b">Current Variation:</span> <?php echo $variation_title ?></p>
+
 <input type="hidden" name="variation" value="<?php echo $variation ?>" />
 
 
@@ -63,7 +53,7 @@ You have to define a price structure, before you can set the prices
 <?php foreach( $elements as $elem ) : ?>
 <?php switch( $elem['type'] ) : ?>
 <?php case ELEMENT_HEADING : ?>
-	<h2><?php echo $elem['title'] ?></h2>
+	<h3><?php echo $elem['title'] ?></h3>
 <?php break; ?>
 <?php case ELEMENT_SELECT : ?>
 	<div class="b"><?php echo $elem['title'] ?>:</div>
@@ -87,6 +77,7 @@ You have to define a price structure, before you can set the prices
 <?php endforeach ?>
 <?php endif ?>
 <input type="hidden" name="action" value="save" />
-<input type="submit" value="Save" />
+<input type="submit" value="Save" class="button-primary"/>
 
 </form>
+</div>

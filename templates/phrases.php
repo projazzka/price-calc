@@ -10,23 +10,10 @@ if(!is_admin())
 	die;
 ?>
 
-<style>
-td.values {
-	width: 80%;
-}
-
-td.values input {
-	width: 100%;
-}
-
-td, th {
-	vertical-align:top;
-	text-align:left;
-	padding: 10px;
-}
-
-</style>
-<h2>Price Calculator Phrases</h2>
+<div class="wrap"> 
+<div id="price-calc-logo"><br /></div> 
+<div id="price-calc-phrases">
+<h2>Price Calculator - Phrases</h2>
 <p>You can customize the words and phrases that will appear on the front-end form here.</p>
 <form method="post" action="">
 <table class="settings">
@@ -42,5 +29,6 @@ td, th {
 <?php endforeach ?>
 </table>
 <input type="hidden" name="action" value="save" />
-<input type="submit" value="Save" />
+<input type="submit" value="Save" class="button-primary" />
 </form>
+</div>

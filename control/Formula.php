@@ -26,7 +26,7 @@ class Formula {
 			foreach( $lines as $line ) {
 				$line = trim($line);
 				$operator = $line[0];
-				if( $operator && strpos( '+*%=', $operator ) !== false ) {
+				if( $operator && strpos( 'fC+*%=', $operator ) !== false ) {
 					$id = substr( $line, 1 );
 					$this->ids[] = $id;
 					$this->operators[] = $operator;
@@ -56,25 +56,35 @@ class Formula {
 		
 		foreach( $this->ids as $idx => $id ) {
 			$operator = $this->operators[$idx];
-			if( $operator != '=' )
-				$operand = $value->getValue( $prices, $values, $id );
-			else
-				$operand = true;
-			if( $operand !== false ) {
-				switch( $operator ) {
-					case '+':
-						$price += $operand;
-						break;
-					case '*':
-						$price *= $operand;
-						break;
-					case '%':
-						$price *= (($operand/100)+1);
-						break;
-					case '=':
-						$this->memory[$id] = $price;
-						//echo "saving $price as @{$id}\n";
-						break;
+			if( $operator == 'f' ) {
+				$price = apply_filters( 'price-calc-custom-formula', $price, $id, $prices, $values );
+			} else {
+				if( $operator != '=' && $operator != 'C' ) {
+					if( $id[0] == '@' )
+						$operand = $this->memory[substr($id, 1)];
+					else
+						$operand = $value->getValue( $prices, $values, $id );
+				} else {
+					$operand = true;
+				}
+				if( $operand !== false ) {
+					switch( $operator ) {
+						case '+':
+							$price += $operand;
+							break;
+						case '*':
+							$price *= $operand;
+							break;
+						case '%':
+							$price *= (($operand/100)+1);
+							break;
+						case '=':
+							$this->memory[$id] = $price;
+							//echo "saving $price as @{$id}\n";
+							break;
+						case 'C':
+							$price = 0;
+					}
 				}
 			}
 			//echo "step $idx, id $id, operator $operator, operand $operand, price: $price\n";

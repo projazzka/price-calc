@@ -43,6 +43,11 @@ function price_calc_callback( $matches ) {
 	return $front->action($matches[1]);
 }
 
+function price_calc_head() {
+	$url = htmlspecialchars( plugin_dir_url( __FILE__ ) );
+	echo '<link rel="stylesheet" type="text/css" href="' . $url . "admin-style.css\" />\n";
+	echo '<script src="' . $url . 'ajax/back.js" ></script>' . "\n";
+}
 
 function price_calc_admin() {
   // top-level menu
@@ -50,7 +55,11 @@ function price_calc_admin() {
   add_submenu_page(__FILE__,"Prices","Prices", 8, PRICE_CALC_ROOT . "back.php");
   add_submenu_page(__FILE__,"Structure","Structure", 8, PRICE_CALC_ROOT . "structure.php");
   add_submenu_page(__FILE__,"Phrases","Phrases", 8, PRICE_CALC_ROOT . "phrases.php");
-  add_submenu_page(__FILE__,"Settings","Settings", 8, PRICE_CALC_ROOT . "settings.php");
+  $page = add_submenu_page(__FILE__,"Settings","Settings", 8, PRICE_CALC_ROOT . "settings.php");
+  if( strpos( $_REQUEST['page'], 'price-calc' ) !== false ) {
+	add_action( 'admin_head', 'price_calc_head' );
+	wp_enqueue_script('jquery-ui-sortable');
+  }
 }
 
 function price_calc_init() {
@@ -81,6 +90,8 @@ function price_calc_activate() {
 		'price-calc-bidformat' => "Give your pet a new home!\r\n<table>\r\n	<tr><td>Full name:</td><td>%fname%</td></tr>\r\n	<tr><td>Contact number:</td><td>%cno%</td></tr>\r\n	<tr><td>Email:</td><td>%email%</td></tr>\r\n	<tr><td>Comment:</td><td>%comments%</td></tr>\r\n</table>\r\n\r\n%sum%\r\n\r\n<p>Thank you for your inquiry!</p>",
 		'price-calc-contact' => 'on',
 		'price-calc-currency' => '$',
+		'price-calc-point' => '.',
+		'price-calc-decimals' => '2',
 		'price-calc-subject' => 'Cost Estimate',
 		'price-calc-email' => 'test@localhost',
 		'price-calc-fullquote' => 'on',
