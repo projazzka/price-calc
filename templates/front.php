@@ -9,11 +9,11 @@
 ?>
 
 <script>
-var obligatory=<?php echo json_encode($obligatory); ?>;
-var all=<?php $all = array_keys($options); $all[] = "variation"; echo json_encode($all) ?>;
-var types=<?php echo json_encode( $types ) ?>;
+var ttpc_obligatory=<?php echo json_encode($obligatory); ?>;
+var ttpc_all=<?php $all = array_keys($options); $all[] = "variation"; echo json_encode($all) ?>;
+var ttpc_types=<?php echo json_encode( $types ) ?>;
 var ttpc_results=<?php echo json_encode($results) ?>;
-var contact=<?php echo json_encode($contact_info) ?>;
+var ttpc_contact=<?php echo json_encode($contact_info) ?>;
 var contact_obligatory=<?php echo json_encode($contact_obligatory) ?>;
 var formula_ids=<?php echo json_encode($formula_ids) ?>;
 var formula_operators=<?php echo json_encode($formula_operators) ?>;
@@ -28,6 +28,7 @@ var ttpc_multitab=<?php echo $multitab ? 'true' : 'false' ?>;
 var ttpc_useentertabbing=<?php echo $entertabbing ? 'true' : 'false' ?>;
 var ttpc_preloadstages=<?php echo $preloadstages ? 'true' : 'false' ?>;
 var ttpc_contact_force=<?php echo $contact == 'force' ? 'true' : 'false' ?>;
+var ttpc_stages=<?php echo count($stages) ?>;
 
 function validate_extra() {
 	<?php echo $validators ?>

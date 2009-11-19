@@ -6,11 +6,11 @@
  * (c) 2009 by Igor Prochazka (thickthumb.com)
  */
 
-var ttpc_memory;
+var ttpc_memory = new Object;
 
 function validate_unequal_reference( left, right, msg ) {
-	leftval = jQuery("#"+left).val();
-	rightval = jQuery("#"+right).val();
+	var leftval = jQuery("#"+left).val();
+	var rightval = jQuery("#"+right).val();
 	if (leftval != rightval) {
 		alert(msg);
 		return false;
@@ -18,7 +18,7 @@ function validate_unequal_reference( left, right, msg ) {
 	return true;
 }
 function validate_unequal_value( left, right, msg ) {
-	leftval = jQuery("#"+left).val();
+	var leftval = jQuery("#"+left).val();
 	if (leftval != right) {
 		alert(msg);
 		return false;
@@ -26,8 +26,8 @@ function validate_unequal_value( left, right, msg ) {
 	return true;
 }
 function validate_greater_reference( left, right, msg ) {
-	leftval = parseFloat(jQuery("#"+left).val());
-	rightval = parseFloat(jQuery("#"+right).val());
+	var leftval = parseFloat(jQuery("#"+left).val());
+	var rightval = parseFloat(jQuery("#"+right).val());
 	if (leftval > rightval) {
 		alert(msg);
 		return false;
@@ -35,7 +35,7 @@ function validate_greater_reference( left, right, msg ) {
 	return true;
 }
 function validate_greater_value( left, right, msg ) {
-	leftval = parseFloat(jQuery("#"+left).val());
+	var leftval = parseFloat(jQuery("#"+left).val());
 	if (leftval > parseFloat(right)) {
 		alert(msg);
 		return false;
@@ -43,8 +43,8 @@ function validate_greater_value( left, right, msg ) {
 	return true;
 }
 function validate_less_reference( left, right, msg ) {
-	leftval = parseFloat(jQuery("#"+left).val());
-	rightval = parseFloat(jQuery("#"+right).val());
+	var leftval = parseFloat(jQuery("#"+left).val());
+	var rightval = parseFloat(jQuery("#"+right).val());
 	if (leftval < rightval) {
 		alert(msg);
 		return false;
@@ -52,7 +52,7 @@ function validate_less_reference( left, right, msg ) {
 	return true;
 }
 function validate_less_value( left, right, msg ) {
-	leftval = parseFloat(jQuery("#"+left).val());
+	var leftval = parseFloat(jQuery("#"+left).val());
 	if (leftval < parseFloat(right)) {
 		alert(msg);
 		return false;
@@ -61,8 +61,8 @@ function validate_less_value( left, right, msg ) {
 }
 
 function validate_equal_reference( left, right, msg ) {
-	leftval = jQuery("#"+left).val();
-	rightval = jQuery("#"+right).val();
+	var leftval = jQuery("#"+left).val();
+	var rightval = jQuery("#"+right).val();
 	if (leftval == rightval) {
 		alert(msg);
 		return false;
@@ -70,7 +70,7 @@ function validate_equal_reference( left, right, msg ) {
 	return true;
 }
 function validate_equal_value( left, right, msg ) {
-	leftval = jQuery("#"+left).val();
+	var leftval = jQuery("#"+left).val();
 	if (leftval == right) {
 		alert(msg);
 		return false;
@@ -142,9 +142,9 @@ function responseAjax( encoded ) {
 }
 
 function getParamMap( values ) {
-	map = new Object;
+	var param, map = new Object;
 
-	for( idx in values ) {
+	for( var idx=0; idx<values.length; idx++ ) {
 		id = values[idx];
 		obj = jQuery("[name='" + id + "']");
 		
@@ -159,12 +159,12 @@ function getParamMap( values ) {
 }
 
 function sendAjax() {
-	var all_with_contact = all.slice().concat( contact );
+	var all_with_contact = ttpc_all.slice().concat( ttpc_contact );
 	jQuery.get( "index.php", getParamMap( all_with_contact ), responseAjax );
 }
 
 function checkForm( checkMail ) {
-	required = obligatory.slice();
+	var required = ttpc_obligatory.slice();
 	
 	// if email selected, then add contact info as required
 	if( checkMail & (ttpc_contact_force || jQuery("#company_mail").is(":checked")) ) {
@@ -172,7 +172,7 @@ function checkForm( checkMail ) {
 	} 
 	
 	var ok = true;
-	for( idx in required ) {
+	for( var idx=0; idx<required.length; idx++ ) {
 		input = jQuery("[name='" + required[idx] + "']");
 		if (input.length != 0) { // ignore if form element is not displayed
 			if (!input.val() || input.val() == 0 || input.val() == '') {
@@ -205,7 +205,7 @@ function ttpc_calculate() {
 }	
 
 function printWindow() {
-	var all_with_contact = all.slice().concat( contact );
+	var all_with_contact = ttpc_all.slice().concat( ttpc_contact );
 
 	if( !validate_extra() )
 		return false;
@@ -214,20 +214,21 @@ function printWindow() {
 		warnForm();
 		return false;
 	}
-	values='';
-	for( idx in all ) {
-		id = all_with_contact[idx];
-		value = jQuery("#" + id).val();
+	var values='';
+	for( var idx=0; idx<ttpc_all.length; idx++ ) {
+		var id = all_with_contact[idx];
+		var value = jQuery("#" + id).val();
 		values += "&" + encodeURI(id) + '=' + encodeURI(value);
 	}
-	win = window.open('index.php?price-calc-ajax=1&print=1'+values,'mywin','left=20,top=20,width=500,height=500,toolbar=1,resizable=1,location=1');
+	window.open('index.php?price-calc-ajax=1&print=1'+values,'mywin','left=20,top=20,width=500,height=500,toolbar=1,resizable=1,location=1');
 }
 
 function ttpc_updateSubtotal() {
-	var total = 0;
+	var i, id, operator, operand, valid, price, total = 0;
+	var obj, text, priceTxt, number;
 
 	ttpc_memory = [];
-	for( i in formula_ids ) {
+	for( var i=0; i<formula_ids.length; i++ ) {
 		id = formula_ids[i];
 		operator = formula_operators[i];
 		operand = 0;
@@ -243,7 +244,7 @@ function ttpc_updateSubtotal() {
 				operand = ttpc_memory[id.substring(1)];
 				valid = !isNaN(operand);
 			} else {
-				switch (types[id]) {
+				switch (ttpc_types[id]) {
 					case 'select':
 						price = jQuery("#" + id + " option:selected").attr('price');
 						operand = parseFloat(price);
@@ -303,13 +304,15 @@ function ttpc_updateSubtotal() {
 		jQuery("#subtotalspan").text(subtotalTxt);
 	}
 	
-	for( id in ttpc_results ) {
+	for( var id in ttpc_results ) {
 		variable = ttpc_results[id];
 		if( variable in ttpc_memory ) {
 			value = ttpc_memory[variable];
 			jQuery("#" + id).text( ttpc_number_format( value ));
 		}
 	}
+
+	var warn;
 	if(!checkForm( false )) {
 		warn = "(form incomplete)";
 	} else {
@@ -320,7 +323,7 @@ function ttpc_updateSubtotal() {
 }
 
 function ttpc_nextStage(){
-	stage = parseInt(jQuery(this).attr("stage"));
+	var stage = parseInt(jQuery(this).attr("stage"));
 	if(!stage)
 		stage = 0;
 
@@ -346,7 +349,7 @@ function ttpc_nextStage(){
 }
 
 function ttpc_previousStage() {
-	stage = parseInt(jQuery(this).attr("stage"));
+	var stage = parseInt(jQuery(this).attr("stage"));
 	
 	ttpc_updateStages( stage );
 }
@@ -359,12 +362,12 @@ function ttpc_updateStages( stage ) {
 }
 
 function ttpc_updateForms( stage ) {
-	idx = stage;
+	var idx = stage;
 	jQuery(".form-stage:eq(" + idx + ")").show();
 	if (ttpc_multitab) {
 		jQuery(".form-stage:lt(" + idx + ")").hide();
 	} else {
-		if(!(stage==0 && jQuery('#variation').hasClass('stage-continue-direct')))
+		if(!(stage==1 && jQuery('#variation').hasClass('stage-continue-direct')))
 			jQuery("#form-stage-" + (stage-1) + " :input").attr("disabled", "disabled");
 		jQuery("#form-stage-" + stage + " :input").removeAttr("disabled");
 	}
@@ -376,6 +379,12 @@ function ttpc_updateForms( stage ) {
 		jQuery(":input").change(ttpc_updateSubtotal);
 		jQuery(".on_change_next").change(ttpc_nextStage);
 		ttpc_enterTabbing();
+	}
+
+	if( stage == ttpc_stages ) {
+		jQuery("#control_form").show();
+	} else {
+		jQuery("#control_form").hide();
 	}
 }
 
@@ -398,21 +407,22 @@ function ttpc_updateControl( stage ) {
 }
 
 function ttpc_loadStage( stage ) {
-	params = {
+	var params = {
 		"price-calc-form":1,
 		"formstage": stage,
 		"variation":jQuery( "#variation" ).val(),
-		"values":JSON.stringify(getParamMap( all ))
+		"values":JSON.stringify(getParamMap( ttpc_all ))
 	};
+	jQuery("#form-stage-" + stage).remove();
+	jQuery("#stage_loading").show();
 	jQuery.get( "index.php", params, function( html ) {
 
 		jQuery("#main_form").append( html );
-		jQuery("#control_form").css( "display", "block" );
 		
 		jQuery("#response").empty();
 		ttpc_updateStages( stage );
+		jQuery("#stage_loading").hide();
 	} );
-	jQuery("#stage_loading").hide();
 
 }
 
@@ -449,7 +459,7 @@ function ttpc_enterTabbing() {
 
 jQuery(document).ready( function() {
 	jQuery(".stage-continue").click( ttpc_nextStage ).removeAttr("disabled");
-	jQuery("#variation.stage-continue-direct").change( ttpc_loadStage );
+	jQuery("#variation.stage-continue-direct").change( ttpc_nextStage );
 	jQuery(".stage-back").click( ttpc_previousStage );
 	jQuery("#company_mail").change( function() {
 		jQuery("div#contact_form").toggle( jQuery(this).val() );

@@ -22,6 +22,7 @@ class Front {
 		$opts = Options::getInstance();
 		$results = $opts->getResults();
 		$stageNames = $opts->getStageNames();
+		$stages = $opts->getStages();
 		
 		$fullquote = get_option( 'price-calc-fullquote' );
 		$contact = get_option( 'price-calc-contact' );

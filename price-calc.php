@@ -3,7 +3,7 @@
 Plugin Name: price-calc
 Plugin URI: http://www.thickthumb.com/open-source/price-calc/
 Description: Displays a configurable price calculator for your products
-Version: 0.6.2
+Version: 0.6.2.1
 Author: Igor Prochazka
 Author URI: http://www.thickthumb.com
 
