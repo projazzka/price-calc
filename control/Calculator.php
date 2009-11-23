@@ -56,7 +56,7 @@ class Calculator {
 
 		$out = $this->getQuote( $concepts );
 
-		$print = $_REQUEST['print'];
+		$print = price_calc_get_from_request('print');
 
 		if(!$print) {
 			$this->normalResponse( $out );
@@ -87,10 +87,10 @@ class Calculator {
 	function send( $out ) {
 		$mailOk = true;
 		
-		if( $_REQUEST['company_mail'] ) {
+		if( price_calc_get_from_request('company_mail') ) {
 			$mailer = new Mailer();
 			$mailOk = $mailer->send( $out );
-			if( $mailOk && ($email = $_REQUEST['email']) ) {
+			if( $mailOk && ($email = price_calc_get_from_request('email')) ) {
 				$mailOk = $mailer->send( $out, $email );
 			}
 		}
@@ -116,13 +116,13 @@ class Calculator {
 		$out .= '<div class="sum">' . wpautop( get_option( 'price-calc-bidformat' ) ) . '</div>';
 		
 		$out = str_replace( '%sum%', $sum, $out );
-		$out = str_replace( '%fname%', $_REQUEST['fname'] /*htmlspecialchars($_REQUEST['fname'])*/, $out );
-		$out = str_replace( '%cno%', htmlspecialchars($_REQUEST['cno']), $out );
-		$out = str_replace( '%email%', htmlspecialchars($_REQUEST['email']), $out );
-		$out = str_replace( '%address%', htmlspecialchars($_REQUEST['address']), $out );
-		$out = str_replace( '%city%', htmlspecialchars($_REQUEST['city']), $out );
-		$out = str_replace( '%state%', htmlspecialchars($_REQUEST['state']), $out );
-		$out = str_replace( '%comments%', htmlspecialchars($_REQUEST['comments']), $out );
+		$out = str_replace( '%fname%', htmlspecialchars(price_calc_get_from_request('fname'), ENT_NOQUOTES), $out );
+		$out = str_replace( '%cno%', htmlspecialchars(price_calc_get_from_request('cno'), ENT_NOQUOTES), $out );
+		$out = str_replace( '%email%', htmlspecialchars(price_calc_get_from_request('email'), ENT_NOQUOTES), $out );
+		$out = str_replace( '%address%', htmlspecialchars(price_calc_get_from_request('address'), ENT_NOQUOTES), $out );
+		$out = str_replace( '%city%', htmlspecialchars(price_calc_get_from_request('city'), ENT_NOQUOTES), $out );
+		$out = str_replace( '%state%', htmlspecialchars(price_calc_get_from_request('state'), ENT_NOQUOTES), $out );
+		$out = str_replace( '%comments%', htmlspecialchars(price_calc_get_from_request('comments'), ENT_NOQUOTES), $out );
 
 		$out = apply_filters( 'price-calc-bid', $out );
 

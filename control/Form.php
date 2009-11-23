@@ -16,7 +16,10 @@ require_once( PRICE_CALC_CONTROL . 'Formula.php' );
 class Form {
 	
 	function action() {
-		echo $this->getForm( Variation::getFromRequest(), $_REQUEST['formstage'], json_decode($_REQUEST['values'], true) );
+		echo $this->getForm( Variation::getFromRequest(),
+			price_calc_get_from_request('formstage'),
+			json_decode(price_calc_get_from_request('values'), true)
+		);
 	}
 
 	function getForm( $variation, $stage = 0, $values = null) {

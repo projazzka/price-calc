@@ -48,7 +48,7 @@ class Phrases {
 	function getDefaults() { return $this->defaults; }
 	
 	function action() {
-		switch( $_REQUEST['action'] ) {
+		switch( price_calc_get_from_request('action') ) {
 			case 'save':
 				$this->save();
 				break;
@@ -61,7 +61,7 @@ class Phrases {
 	function save() {
 		$phrases = array();
 		foreach( $this->defaults as $key => $default ) {
-			$phrases[$key] = $_REQUEST['phrase_' . $key];
+			$phrases[$key] = price_calc_get_from_request( 'phrase_' . $key );
 		}
 		
 		update_option( 'price-calc-phrases', json_encode( $phrases ));

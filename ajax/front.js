@@ -367,9 +367,11 @@ function ttpc_updateForms( stage ) {
 	if (ttpc_multitab) {
 		jQuery(".form-stage:lt(" + idx + ")").hide();
 	} else {
-		if(!(stage==1 && jQuery('#variation').hasClass('stage-continue-direct')))
-			jQuery("#form-stage-" + (stage-1) + " :input").attr("disabled", "disabled");
-		jQuery("#form-stage-" + stage + " :input").removeAttr("disabled");
+		if (stage != 1) {
+			if (!jQuery('#variation').hasClass('stage-continue-direct')) 
+				jQuery("#form-stage-" + (stage - 1) + " :input").attr("disabled", "disabled");
+			jQuery("#form-stage-" + stage + " :input").removeAttr("disabled");
+		}
 	}
 	if (ttpc_preloadstages) 
 		jQuery(".form-stage:gt(" + idx + ")").hide();

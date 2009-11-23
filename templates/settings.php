@@ -26,7 +26,7 @@ if(!is_admin())
 Company Email:
 </th>
 <td class="values">
-<input type="text" name="email" value="<?php echo addslashes($email) ?>" />
+<input type="text" name="email" value="<?php echo htmlspecialchars($email) ?>" />
 </td>
 </tr>
 <tr>
@@ -34,7 +34,7 @@ Company Email:
 Email Subject:
 </th>
 <td class="values">
-<input type="text" name="subject" value="<?php echo addslashes($subject) ?>" />
+<input type="text" name="subject" value="<?php echo htmlspecialchars($subject) ?>" />
 </td>
 </tr>
 <tr>
@@ -99,7 +99,7 @@ Pre-load all form stages</label><br />
 Currency (before number)
 </th>
 <td class="values">
-<input type="text" name="currency" value="<?php echo addslashes($currency) ?>" />
+<input type="text" name="currency" value="<?php echo htmlspecialchars($currency) ?>" />
 </td>
 </tr>
 <tr>
@@ -107,7 +107,7 @@ Currency (before number)
 Currency (behind number)
 </th>
 <td class="values">
-<input type="text" name="currencypost" value="<?php echo addslashes($currencypost) ?>" />
+<input type="text" name="currencypost" value="<?php echo htmlspecialchars($currencypost) ?>" />
 </td>
 </tr>
 <tr>
@@ -131,7 +131,7 @@ Number of decimals
 Thousands separation
 </th>
 <td class="values">
-<input type="text" name="thousands" value="<?php echo addslashes($thousands) ?>" />
+<input type="text" name="thousands" value="<?php echo htmlspecialchars($thousands) ?>" />
 </td>
 </tr>
 <tr>
@@ -139,7 +139,7 @@ Thousands separation
 Decimal point
 </th>
 <td class="values">
-<input type="text" name="point" value="<?php echo addslashes($point) ?>" />
+<input type="text" name="point" value="<?php echo htmlspecialchars($point) ?>" />
 </td>
 </tr>
 </table>

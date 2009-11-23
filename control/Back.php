@@ -18,7 +18,7 @@ class Back {
 	}
 	
 	function action() {
-		switch( $_REQUEST['action'] ) {
+		switch( price_calc_get_from_request('action') ) {
 			case 'save':
 				$this->save();
 				break;

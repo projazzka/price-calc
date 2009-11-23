@@ -23,7 +23,7 @@ if(!is_admin())
 	"<?php echo $default ?>"
 	</td>
 	<td class="values">
-	<input type="text" name="phrase_<?php echo $key ?>" value="<?php echo addslashes($phrases[$key]) ?>" />
+	<input type="text" name="phrase_<?php echo $key ?>" value="<?php echo htmlspecialchars($phrases[$key]) ?>" />
 	</td>
 	</tr>
 <?php endforeach ?>

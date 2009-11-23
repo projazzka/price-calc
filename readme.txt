@@ -82,3 +82,6 @@ See more info about the configuration on the [plugin's homepage](http://www.thic
 * Bug-fixes
 * Enhanced compability
 
+= 0.6.2.2 =
+* Bug-fixes
+* Fixing problems with "magic quotes"

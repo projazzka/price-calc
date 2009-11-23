@@ -37,7 +37,7 @@ class Settings {
 	}
 	
 	function action() {
-		switch( $_REQUEST['action'] ) {
+		switch( price_calc_get_from_request('action') ) {
 			case 'save':
 				$this->save();
 				break;
@@ -49,7 +49,7 @@ class Settings {
 	
 	function save() {
 		foreach( $this->options as $option ) {
-			update_option( 'price-calc-' . $option, $_REQUEST[$option]);
+			update_option( 'price-calc-' . $option, price_calc_get_from_request($option) );
 		}
 		$this->show();
 	}
