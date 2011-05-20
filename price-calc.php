@@ -112,9 +112,7 @@ function price_calc_activate() {
 
 function price_calc_get_from_request( $id ) {
 	$value = $_REQUEST[$id];
-	if(function_exists('get_magic_quotes_gpc'))
-	if(get_magic_quotes_gpc())
-		$value = stripslashes( $value );
+	$value = stripslashes( $value );
 	return $value;
 }
 
