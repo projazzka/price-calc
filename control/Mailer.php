@@ -13,7 +13,7 @@ class Mailer {
 	    'Reply-To: ' . $from . "\r\n" .
 	    'X-Mailer: PHP/' . phpversion();
 		
-		return @mail( $to, $subject, $message, $headers );
+		return @wp_mail( $to, $subject, $message, $headers );
 	}
 }
 
