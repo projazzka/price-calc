@@ -85,3 +85,6 @@ See more info about the configuration on the [plugin's homepage](http://www.thic
 = 0.6.2.2 =
 * Bug-fixes
 * Fixing problems with "magic quotes"
+
+= 0.7 =
+* Limited backwards compatibility

@@ -5,6 +5,7 @@
 	/* paths */
     define( 'PRICE_CALC_ROOT', dirname(__FILE__) . '/' );
 	define( 'PRICE_CALC_CONTROL', PRICE_CALC_ROOT . 'control/' );
+	define( 'PRICE_CALC_CORE', PRICE_CALC_ROOT . 'core/' );
 	define( 'PRICE_CALC_TEMPLATES', PRICE_CALC_ROOT . 'templates/' );
 	define( 'PRICE_CALC_DATA', PRICE_CALC_ROOT . 'data/' );
 	define( 'PRICE_CALC_AJAX', PRICE_CALC_ROOT . 'ajax/' );

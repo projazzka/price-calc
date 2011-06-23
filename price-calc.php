@@ -3,7 +3,7 @@
 Plugin Name: price-calc
 Plugin URI: http://www.thickthumb.com/open-source/price-calc/
 Description: Displays a configurable price calculator for your products
-Version: 0.6.2.2
+Version: 0.7.0
 Author: Igor Prochazka
 Author URI: http://www.thickthumb.com
 
@@ -26,6 +26,8 @@ Author URI: http://www.thickthumb.com
 
 ---------------------------------------------------------------------
 */
+
+define('PRICE_CALC_VERSION', '0.7.0');
 
 include( dirname( __FILE__) . '/env.php' );
 
@@ -50,15 +52,23 @@ function price_calc_head() {
 }
 
 function price_calc_admin() {
-  // top-level menu
-  add_object_page("Calculator", "Calculator", -1, __FILE__, "price-calc_plugin");
-  add_submenu_page(__FILE__,"Prices","Prices", 8, PRICE_CALC_ROOT . "back.php");
-  add_submenu_page(__FILE__,"Structure","Structure", 8, PRICE_CALC_ROOT . "structure.php");
-  add_submenu_page(__FILE__,"Phrases","Phrases", 8, PRICE_CALC_ROOT . "phrases.php");
-  $page = add_submenu_page(__FILE__,"Settings","Settings", 8, PRICE_CALC_ROOT . "settings.php");
-  if( strpos( $_REQUEST['page'], 'price-calc' ) !== false ) {
-	add_action( 'admin_head', 'price_calc_head' );
-	wp_enqueue_script('jquery-ui-sortable');
+    require_once( PRICE_CALC_CORE . 'Compatibility.php');
+  
+	// top-level menu
+	add_object_page("Calculator", "Calculator", -1, __FILE__, "price-calc_plugin");
+	
+	$compatibility = new PC_Compatibility();
+	if($compatibility->toBeUpgraded()) {
+		add_submenu_page(__FILE__,"Upgrade","Upgrade", 8, PRICE_CALC_ROOT . "upgrade.php");		
+	} else {
+		add_submenu_page(__FILE__,"Prices","Prices", 8, PRICE_CALC_ROOT . "back.php");
+		add_submenu_page(__FILE__,"Structure","Structure", 8, PRICE_CALC_ROOT . "structure.php");
+		add_submenu_page(__FILE__,"Phrases","Phrases", 8, PRICE_CALC_ROOT . "phrases.php");
+		$page = add_submenu_page(__FILE__,"Settings","Settings", 8, PRICE_CALC_ROOT . "settings.php");
+		if( strpos( $_REQUEST['page'], 'price-calc' ) !== false ) {
+		  add_action( 'admin_head', 'price_calc_head' );
+		  wp_enqueue_script('jquery-ui-sortable');
+	}
   }
 }
 
