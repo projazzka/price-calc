@@ -13,6 +13,7 @@ class PC_Upgrade extends PC_Admin {
     
     function __construct() {
 		$this->template = 'upgrade.php';
+        $this->title = 'Upgrade';
 	}
 		
 	function save() {
