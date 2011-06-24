@@ -65,11 +65,11 @@ function price_calc_admin() {
 		add_submenu_page(__FILE__,"Structure","Structure", 8, PRICE_CALC_ROOT . "structure.php");
 		add_submenu_page(__FILE__,"Phrases","Phrases", 8, PRICE_CALC_ROOT . "phrases.php");
 		$page = add_submenu_page(__FILE__,"Settings","Settings", 8, PRICE_CALC_ROOT . "settings.php");
-		if( strpos( $_REQUEST['page'], 'price-calc' ) !== false ) {
-		  add_action( 'admin_head', 'price_calc_head' );
-		  wp_enqueue_script('jquery-ui-sortable');
 	}
-  }
+	if( strpos( $_REQUEST['page'], 'price-calc' ) !== false ) {
+		add_action( 'admin_head', 'price_calc_head' );
+		wp_enqueue_script('jquery-ui-sortable');
+	}
 }
 
 function price_calc_init() {
