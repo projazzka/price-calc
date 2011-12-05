@@ -2,14 +2,14 @@
 /*
 Plugin Name: price-calc
 Plugin URI: http://www.thickthumb.com/open-source/price-calc/
-Description: Displays a configurable price calculator for your products
-Version: 0.6.2.2
+Description: This is software has been discontinued. More info: http://goo.gl/QFuzm
+Version: 0.6.3
 Author: Igor Prochazka
 Author URI: http://www.thickthumb.com
 
 ---------------------------------------------------------------------
 	This file is part of the wordpress plugin "price-calc"
-    Copyright (C) 2009 by Igor Prochazka
+    Copyright (C) 2009-2011 by Igor Prochazka
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

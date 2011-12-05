@@ -205,7 +205,10 @@ function ttpc_calculate() {
 }	
 
 function printWindow() {
-	var all_with_contact = ttpc_all.slice().concat( ttpc_contact );
+	var all_with_contact = ttpc_all.slice();
+	if(jQuery("#company_mail").is(':checked')) {
+		all_with_contact = all_with_contact.concat( ttpc_contact );
+	}
 
 	if( !validate_extra() )
 		return false;
@@ -215,7 +218,7 @@ function printWindow() {
 		return false;
 	}
 	var values='';
-	for( var idx=0; idx<ttpc_all.length; idx++ ) {
+	for( var idx=0; idx<all_with_contact.length; idx++ ) {
 		var id = all_with_contact[idx];
 		var value = jQuery("#" + id).val();
 		values += "&" + encodeURI(id) + '=' + encodeURI(value);

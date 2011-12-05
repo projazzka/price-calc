@@ -139,31 +139,31 @@ function ttpc_customNextStage( stage ) {
 </tr>
 <tr>
 <td ><?php pc_phrase('fullname') ?></td>
-<td><input name="fname" type="text" /> <?php pc_phrase('required') ?></td>
+<td><input name="fname" id="fname" type="text" /> <?php pc_phrase('required') ?></td>
 </tr>
 <tr>
 <td ><?php pc_phrase('number') ?></td>
-<td><input name="cno" type="text" /> <?php pc_phrase('required') ?></td>
+<td><input name="cno" id="cno" type="text" /> <?php pc_phrase('required') ?></td>
 </tr>
 <tr>
 <td ><?php pc_phrase('email') ?></td>
-<td><input name="email" type="text" /> <?php pc_phrase('required') ?></td>
+<td><input name="email" id="email" type="text" /> <?php pc_phrase('required') ?></td>
 </tr>
 <tr>
 <td ><?php pc_phrase('address') ?></td>
-<td><input name="address" type="text" /></td>
+<td><input name="address" id="address" type="text" /></td>
 </tr>
 <tr>
 <td ><?php pc_phrase('city') ?></td>
-<td><input name="city" type="text" /></td>
+<td><input name="city" id="city" type="text" /></td>
 </tr>
 <tr>
 <td ><?php pc_phrase('state') ?></td>
-<td><input name="state" type="text" /></td>
+<td><input name="state" id="state" type="text" /></td>
 </tr>
 <tr>
 <td ><?php pc_phrase('comments') ?></td>
-<td><textarea style="width: 300px; height: 150px;" name="comments"></textarea></td>
+<td><textarea style="width: 300px; height: 150px;" name="comments" id="comments"></textarea></td>
 </tr>
 </table>
 

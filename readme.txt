@@ -3,8 +3,8 @@ Contributors: jazzigor
 Donate link: http://www.thickthumb.com/open-source
 Tags: price, calculator, calculate, calculation, product, variations
 Requires at least: 2.8
-Tested up to: 2.8.6
-Stable tag: 0.6.2.1
+Tested up to: 3.2.1
+Stable tag: 0.6.3
 
 "price-calc" is a WordPress plug-in that shows a nice inter-active price calculator for your product variations on any post or page. 
 
@@ -14,6 +14,8 @@ Stable tag: 0.6.2.1
 Once configured, it's as easy as placing the simple
 [price-calc]
 mark-up anywhere in your text. The user gets a nice interactive form to choose all the characteristics he needs. When he's ready he can see the quote instantly on the screen, print it out or get it by email.
+
+PLEASE NOTE: There will not be any further development of this software. It will be replaced by [Jazzy Forms](http://www.l90r.com/posts/jazzy-forms).
 
 Features are:
 
@@ -85,3 +87,7 @@ See more info about the configuration on the [plugin's homepage](http://www.thic
 = 0.6.2.2 =
 * Bug-fixes
 * Fixing problems with "magic quotes"
+
+= 0.6.3 =
+* Show contact information on print page
+* Improve E-Mail compatibility
